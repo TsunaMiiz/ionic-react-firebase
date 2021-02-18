@@ -1,31 +1,38 @@
 import { Redirect, Route, Switch } from 'react-router-dom';
-import { IonApp, IonRouterOutlet, } from '@ionic/react';
-import React, { useState } from 'react';
+import { IonApp, IonLoading } from '@ionic/react';
+import React from 'react';
 import { IonReactRouter } from '@ionic/react-router';
 import AppTabs from './AppTabs';
 import LoginPage from './pages/LoginPage';
-import { AuthContext } from './auth';
+import RegisterPage from './pages/RegisterPage';
+import { AuthContext, useAuthInit } from './auth';
 import NotFoundPage from './pages/NotFoundPage';
 
 
-const App: React.FC = () => {
-  const [loggedIn, setLoggedIn] = useState(false);
-  console.log(`loggedIn= ${loggedIn}`);
 
+const App: React.FC = () => {
+  const {loading, auth} = useAuthInit();
+  if (loading) {
+    return <IonLoading isOpen />;
+  }
+  console.log(`rendering App with LoggedIn:`, auth);
   return (
     <IonApp>
-      <AuthContext.Provider value={{ loggedIn }}>
+      <AuthContext.Provider value = {auth}>
         <IonReactRouter>
           <Switch>
             <Route exact path="/login"  >
-              <LoginPage onLogin={() => setLoggedIn(true)}/>
+              <LoginPage />
+            </Route>
+            <Route exact path="/register"  >
+              <RegisterPage />
             </Route>
             <Route path="/my">
               <AppTabs />
             </Route>
             <Redirect exact path="/" to="/my/entries" />
             <Route>
-              <NotFoundPage/>
+              <NotFoundPage />
             </Route>
           </Switch>
         </IonReactRouter>

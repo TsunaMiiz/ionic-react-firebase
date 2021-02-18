@@ -6,9 +6,12 @@ import {
   IonToolbar,
   IonRouterLink,
   IonList,
-  IonItem
+  IonItem,
+  IonButton
 } from '@ionic/react';
 import { entries } from '../data';
+import { auth } from '../firebase';
+
 function formMoney(amount: any) {
   return '$' + amount.toFixed(2);
 }
@@ -19,6 +22,9 @@ const HomePage: React.FC = () => {
       <IonHeader>
         <IonToolbar>
           <IonTitle>Home</IonTitle>
+          <IonButton slot = "end"color= "medium" expand="block" onClick={() => auth.signOut()}>
+            Logout
+          </IonButton>
         </IonToolbar>
       </IonHeader>
       <IonContent className="ion-padding">

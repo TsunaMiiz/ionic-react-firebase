@@ -1,22 +1,26 @@
-import { IonButton, IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonList, IonItem, IonLabel, IonInput } from '@ionic/react';
+import { IonButton, IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonList, IonItem, IonLabel, IonInput, IonText, IonLoading } from '@ionic/react';
 import { useContext, useState } from 'react';
 import { Redirect } from 'react-router-dom';
 import { useAuth } from '../auth';
 import { auth } from '../firebase';
 
-interface Props {
-    onLogin: () => void;
-}
 
-const LoginPage: React.FC<Props> = ({ onLogin }) => {
+const LoginPage: React.FC = () => {
     const { loggedIn } = useAuth();
     const [ email, setEmail ] = useState<any>('');
     const [ password, setPassword ] = useState<any>('');
+    const [status, setStatus] = useState({loading: false, error:false});
 
     const handleLogin = async () => {
-        const credential = await auth.signInWithEmailAndPassword('test@sdtc.ac.th', '12345678');
-        console.log('creadential:', credential);
-        onLogin();
+        try{
+            setStatus({loading: true, error:false});
+            const credential = await auth.signInWithEmailAndPassword(email, password);
+            setStatus({loading: false, error:false});
+            console.log('creadential:', credential);
+        } catch(error){
+            setStatus({loading: false, error:true});
+            console.log('Error:', error)
+        }
     }
     if (loggedIn) {
         return <Redirect to="/my/entries" />
@@ -43,7 +47,12 @@ const LoginPage: React.FC<Props> = ({ onLogin }) => {
                         />
                     </IonItem>
                 </IonList>
+                {status.error &&
+                    <IonText color = "danger">Your e-mail or password is wrong!</IonText>
+                }
                 <IonButton expand="block" onClick={handleLogin}>Login</IonButton>
+                <IonButton expand="block" fill="clear" routerLink="/register">Don't have an account?</IonButton>
+                <IonLoading isOpen={status.loading}/>
             </IonContent>
         </IonPage>
     );

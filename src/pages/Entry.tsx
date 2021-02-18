@@ -24,7 +24,7 @@ const EntryPage: React.FC = () => {
         <IonPage>
             <IonHeader>
                 <IonToolbar>
-                    <IonButtons>
+                    <IonButtons slot="start">
                         <IonBackButton/>
                     </IonButtons>
                     <IonTitle>{item.title}  {id}</IonTitle>
